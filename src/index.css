@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Lexend", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #2bee8c;
+  --color-background-light: #f6f8f7;
+  --color-background-dark: #102219;
+}
+
+@layer base {
+  body {
+    @apply bg-background-light text-slate-900 font-sans antialiased;
+  }
+}
+
+.chart-gradient {
+  background: linear-gradient(180deg, rgba(43, 238, 140, 0.2) 0%, rgba(43, 238, 140, 0) 100%);
+}
+
