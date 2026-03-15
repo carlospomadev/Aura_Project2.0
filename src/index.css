@@ -9,7 +9,7 @@
 
 @layer base {
   body {
-    @apply bg-background-light text-slate-900 font-sans antialiased;
+    @apply bg-background-light text-slate-900 font-sans antialiased transition-colors duration-300 dark:bg-background-dark dark:text-slate-100;
   }
 }
 

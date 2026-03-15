@@ -15,13 +15,13 @@ export default function BottomNav({ activeScreen, onNavigate }: BottomNavProps) 
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/80 backdrop-blur-lg border-t border-slate-100 px-6 pt-3 pb-8 flex items-center justify-between z-50">
+    <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-t border-slate-100 dark:border-slate-800 px-6 pt-3 pb-8 flex items-center justify-between z-50 transition-colors">
       {navItems.slice(0, 2).map((item) => (
         <button
           key={item.id}
           onClick={() => onNavigate(item.id)}
           className={`flex flex-col items-center gap-1 transition-colors ${
-            activeScreen === item.id ? 'text-primary' : 'text-slate-400'
+            activeScreen === item.id ? 'text-primary' : 'text-slate-400 dark:text-slate-500'
           }`}
         >
           <item.icon size={24} fill={activeScreen === item.id ? 'currentColor' : 'none'} />
@@ -43,7 +43,7 @@ export default function BottomNav({ activeScreen, onNavigate }: BottomNavProps) 
           key={item.id}
           onClick={() => onNavigate(item.id)}
           className={`flex flex-col items-center gap-1 transition-colors ${
-            activeScreen === item.id ? 'text-primary' : 'text-slate-400'
+            activeScreen === item.id ? 'text-primary' : 'text-slate-400 dark:text-slate-500'
           }`}
         >
           <item.icon size={24} fill={activeScreen === item.id ? 'currentColor' : 'none'} />

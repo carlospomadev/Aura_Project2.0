@@ -1,45 +1,65 @@
-import { Bell, Footprints, Moon, Droplets, Sparkles, ChevronRight } from 'lucide-react';
+import { Bell, Footprints, Moon, Droplets, Sparkles, LogOut } from 'lucide-react';
 import { motion } from 'motion/react';
+import ThemeToggle from './ThemeToggle';
+import { useSupabase } from '../context/SupabaseContext';
 
-export default function Dashboard() {
-  const activities = [
+interface DashboardProps {
+  isDarkMode: boolean;
+  onToggleDarkMode: () => void;
+}
+
+export default function Dashboard({ isDarkMode, onToggleDarkMode }: DashboardProps) {
+  const { user, logout, activities: dbActivities } = useSupabase();
+
+  const defaultActivities = [
     {
       id: '1',
       label: 'Steps today',
       value: '8,432',
       icon: Footprints,
-      bgColor: 'bg-emerald-50',
-      iconColor: 'text-emerald-600',
-      borderColor: 'border-emerald-100'
+      bgColor: 'bg-emerald-50 dark:bg-emerald-900/20',
+      iconColor: 'text-emerald-600 dark:text-emerald-400',
+      borderColor: 'border-emerald-100 dark:border-emerald-800/30'
     },
     {
       id: '2',
       label: 'Last night',
       value: '7h 20m',
       icon: Moon,
-      bgColor: 'bg-purple-50',
-      iconColor: 'text-purple-600',
-      borderColor: 'border-purple-100'
+      bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+      iconColor: 'text-purple-600 dark:text-purple-400',
+      borderColor: 'border-purple-100 dark:border-purple-800/30'
     },
     {
       id: '3',
       label: 'Hydration',
       value: '1.8L',
       icon: Droplets,
-      bgColor: 'bg-sky-50',
-      iconColor: 'text-sky-600',
-      borderColor: 'border-sky-100'
+      bgColor: 'bg-sky-50 dark:bg-sky-900/20',
+      iconColor: 'text-sky-600 dark:text-sky-400',
+      borderColor: 'border-sky-100 dark:border-sky-800/30'
     },
     {
       id: '4',
       label: 'Mindfulness',
       value: '15m',
       icon: Sparkles,
-      bgColor: 'bg-orange-50',
-      iconColor: 'text-orange-600',
-      borderColor: 'border-orange-100'
+      bgColor: 'bg-orange-50 dark:bg-orange-900/20',
+      iconColor: 'text-orange-600 dark:text-orange-400',
+      borderColor: 'border-orange-100 dark:border-orange-800/30'
     }
   ];
+
+  // Map DB activities if they exist, otherwise use defaults
+  const displayActivities = dbActivities.length > 0 
+    ? dbActivities.map(a => ({
+        ...a,
+        icon: Sparkles, // Default icon for now
+        iconColor: 'text-primary',
+        borderColor: 'border-primary/20',
+        bgColor: 'bg-primary/5'
+      }))
+    : defaultActivities;
 
   return (
     <motion.div 
@@ -52,62 +72,69 @@ export default function Dashboard() {
           <div className="size-12 rounded-full overflow-hidden border-2 border-primary/20">
             <img 
               className="w-full h-full object-cover" 
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJxi71LcPgyfi3Huwypvn9S_ljzqQiBdfKW5OZHH_4x2Ov-oeM8iXbTKE3R0qot58tT3MByoDEedTdvC0jHB95OIGH4rjr3LE7PT36oCvFuElXOpr-FZRXpSZoKVD3G76sCRuZQva2RSIbgMvq-cr-0dQCxexCgo-l9LGZMwqy7J963dSWvNWDOxlUuge8Xadrc1sGSwkKzUu8JO-rPy_YX0NSe8Y5vtqfMEKWZtVv6jlmcMiLFgMI5oE1ztbxtl9oR1LdZtclH51b" 
-              alt="Alex Rivera"
+              src={user?.user_metadata?.avatar_url || "https://picsum.photos/seed/user/200/200"} 
+              alt={user?.user_metadata?.full_name || "User"}
               referrerPolicy="no-referrer"
             />
           </div>
           <div>
-            <p className="text-slate-500 text-sm font-light">Good morning,</p>
-            <h1 className="text-xl font-semibold tracking-tight">Alex Rivera</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-light">Good morning,</p>
+            <h1 className="text-xl font-semibold tracking-tight dark:text-white">{user?.user_metadata?.full_name?.split(' ')[0] || "Friend"}</h1>
           </div>
         </div>
-        <button className="size-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-600">
-          <Bell size={20} />
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle isDarkMode={isDarkMode} onToggle={onToggleDarkMode} />
+          <button 
+            onClick={logout}
+            className="size-10 flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-red-500 transition-colors"
+            aria-label="Logout"
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
       </header>
 
       <main className="flex-1 px-6 pb-24">
         <div className="mt-4 p-6 rounded-xl bg-gradient-to-br from-primary/10 to-primary/30 border border-primary/20 relative overflow-hidden">
           <div className="relative z-10">
-            <p className="text-slate-600 text-sm font-medium uppercase tracking-wider">Wellness Score</p>
+            <p className="text-slate-600 dark:text-slate-300 text-sm font-medium uppercase tracking-wider">Wellness Score</p>
             <div className="flex items-end gap-2 mt-2">
-              <span className="text-6xl font-bold text-slate-900 leading-none">85</span>
+              <span className="text-6xl font-bold text-slate-900 dark:text-white leading-none">85</span>
               <span className="text-primary font-semibold mb-1">Excellent</span>
             </div>
-            <p className="mt-4 text-slate-600 text-sm max-w-[200px]">You're doing better than 92% of users today!</p>
+            <p className="mt-4 text-slate-600 dark:text-slate-400 text-sm max-w-[200px]">You're doing better than 92% of users today!</p>
             <button className="mt-6 px-5 py-2.5 bg-primary text-slate-900 font-semibold rounded-full text-sm shadow-sm">
               View Insights
             </button>
           </div>
           <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-[-10%] right-[10%] w-24 h-24 bg-white/40 rounded-full blur-xl"></div>
+          <div className="absolute bottom-[-10%] right-[10%] w-24 h-24 bg-white/40 dark:bg-white/10 rounded-full blur-xl"></div>
         </div>
 
         <div className="mt-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Your Activity</h2>
+            <h2 className="text-lg font-semibold dark:text-white">Your Activity</h2>
             <button className="text-primary text-sm font-medium">Show all</button>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            {activities.map((activity) => (
+            {displayActivities.map((activity) => (
               <div 
                 key={activity.id}
-                className={`p-4 rounded-xl ${activity.bgColor} border ${activity.borderColor} flex flex-col justify-between aspect-square`}
+                className={`p-4 rounded-xl ${activity.bgColor} border ${activity.borderColor} flex flex-col justify-between aspect-square transition-colors`}
               >
-                <div className="size-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                <div className="size-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
                   <activity.icon size={20} className={activity.iconColor} />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-900">{activity.value}</p>
-                  <p className="text-slate-500 text-xs">{activity.label}</p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">{activity.value}</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-xs">{activity.label}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="mt-8 p-5 bg-slate-900 rounded-xl text-white flex items-center gap-4">
+        <div className="mt-8 p-5 bg-slate-900 dark:bg-slate-800 rounded-xl text-white flex items-center gap-4 transition-colors">
           <div className="size-14 bg-primary/20 rounded-lg flex items-center justify-center shrink-0">
             <Sparkles className="text-primary" size={28} />
           </div>
